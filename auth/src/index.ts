@@ -2,6 +2,7 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
 
 import { currentUserRouter } from './routes/current-user';
 import { signInRouter } from './routes/signin';
@@ -11,7 +12,14 @@ import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
 
 const app = express();
+app.set('trust proxy', true); // to make sure express is aware it is behind proxy ingress
 app.use(json());
+app.use(
+  cookieSession({
+    signed: false, //to disable encyption
+    secure: true, //for https
+  })
+);
 
 app.use(currentUserRouter);
 app.use(singOutRouter);
