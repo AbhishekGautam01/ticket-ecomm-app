@@ -16,7 +16,7 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false, //to disable encyption
-    secure: true, //for https
+    secure: process.env.NODE_ENV !== 'test', //for https
   })
 );
 
