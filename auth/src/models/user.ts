@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Password } from '../services/password';
 
 // An interface that decribes the properties
 // required to create new user
@@ -29,6 +30,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+});
+
+userSchema.pre('save', async function (done) {
+  // to see if password was changed or not as this will run before any save
+  if (this.isModified('password')) {
+    const hashed = await Password.tohash(this.get('password'));
+    this.set('password', hashed);
+  }
+  done();
 });
 
 //IMP we will not user new User but use buildUser function to make effective use of TS
